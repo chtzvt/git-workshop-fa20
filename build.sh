@@ -11,10 +11,14 @@ PRINT_SYSINFO=1
 # Linting will be run if RUN_LINTER != 0, and scan-build is available on the system
 RUN_LINTER=1
 
+# Extension used by your source code files (.c, .cpp, etc)
+SOURCE_FILE_EXT='c'
+
 # List of subdirectories to blacklist (in our case, never build the Template project)
-BLACKLIST_DIRS="./Template"
+BLACKLIST_DIRS="Labs"
 
 # How many commits back should we check for changes to files? ("lower bound", default 10 commits)
+# Only source files with fresh changes that are within this range will be built
 COMMIT_RANGE_LBOUND=10
 
 if [ $PRINT_SYSINFO == 1 ]
@@ -63,13 +67,26 @@ Language versions:
 "
 fi
 
-# Find subdirectories with new changes and makefiles (which we can then build and test), excluding the blacklist
-# CHANGED_DIRS will collect the list of new directories that contain new changes (in the past $COMMIT_RANGE_LBOUND commits) to .c source files
-# This will ensure that Travis attempts to build only the latest changes, which is what we want
-CHANGED_DIRS=`git diff --name-only HEAD~$COMMIT_RANGE_LBOUND..HEAD '*.c' | cut -d '/' -f1 | sed -e 's/^/.\//'`
+REPO_TOTAL_COMMITS=`git rev-list --all --count`
 
-# We'll keep track of the number of build failures here
-FAILED_BUILDS=""
+if [[ $COMMIT_RANGE_LBOUND -gt $REPO_TOTAL_COMMITS ]]
+then
+  echo -e "!! [Grok Notice] Configured commit lower bound ($COMMIT_RANGE_LBOUND) is greater than the total number of commits in this repo: $REPO_TOTAL_COMMITS"
+  COMMIT_RANGE_LBOUND=$(($REPO_TOTAL_COMMITS - 1))
+  echo -e "!! [Grok Notice] This value was overridden to: $COMMIT_RANGE_LBOUND"
+fi
+
+# Find subdirectories with new changes and makefiles (which we can then build and test), excluding the blacklist
+# CHANGED_DIRS will collect the list of new directories that contain new changes (in the past $COMMIT_RANGE_LBOUND commits) to source files
+# This will ensure that Travis attempts to build only the latest changes, which is what we want
+CHANGED_DIRS=`git diff --name-only HEAD~$COMMIT_RANGE_LBOUND..HEAD "*.$SOURCE_FILE_EXT" | cut -d '/' -f1 | sed -e 's/^/.\//'`
+
+# We'll keep track of the number of build successes/failures here
+FAILED_BUILDS=()
+SUCCESSFUL_BUILDS=()
+
+# Keep track of dirs that have already been built, so we don't build them twice
+FINISHED_BUILDS=()
 
 # Only attempt to run builds if there are changes
 # This happens by default, but this fixes a bug where the script
@@ -81,6 +98,11 @@ then
 
   for SUBDIR in $BUILDABLE_DIRS;
   do
+
+    if [[ " ${FINISHED_BUILDS[@]} " =~ " ${SUBDIR} " ]]
+    then
+      continue
+    fi
 
     cd $SUBDIR
 
@@ -96,7 +118,7 @@ then
       if [ $RUN_LINTER == 1 ] && [ `which scan-build` != "" ]
       then
         echo -e "\n>>> Running: static analysis (scan-build)"
-        scan-build gcc -std=c99 -c src/*
+        make lint
         LINT_PASS=$?
         echo -e ">>> FINISHED: static analysis (scan-build)"
       else
@@ -137,12 +159,15 @@ then
       if [ $(($LINT_PASS + $MAKE_PASS)) == 0 ]
       then
           echo -e "\n\t *** BUILD SUCCESS: $SUBDIR ***"
+          SUCCESSFUL_BUILDS+=("$SUBDIR")
       else
           echo -e "\n\t !!! BUILD FAILURE: $SUBDIR !!!"
-          FAILED_BUILDS=${FAILED_BUILDS}" $SUBDIR"
+          FAILED_BUILDS+=("$SUBDIR")
       fi
 
     echo -e "\n/////////////////////////////////////////////////////////\n"
+
+    FINISHED_BUILDS+=("$SUBDIR")
 
     unset MAKEFILE
     unset LINT_PASS
@@ -160,13 +185,23 @@ fi
 # Finally, display a summary of all builds performed, and how successful those were.
 # If any of our builds failed, we'll return the appropriate status code so Travis will know
 echo -e "\n--------------REPORT--------------\n"
-if [ -z $FAILED_BUILDS ]
+if [ ${#SUCCESSFUL_BUILDS[@]} -eq 0 ]
 then
-  echo -e " All projects built successfully!"
+  echo -e " No projects built successfully :("
+  EXCODE=1
+else
+  echo -e " Projects with build successes:"
+  printf '\t%s\n' "${SUCCESSFUL_BUILDS[@]}"
+  EXCODE=0
+fi
+
+if [[ ${#FAILED_BUILDS[@]} -eq 0 && ${#SUCCESSFUL_BUILDS[@]} -ne 0 ]]
+then
+  echo -e "\n All projects built successfully!"
   EXCODE=0
 else
-  echo -e " Some projects failed to build :("
-  echo -e " Projects with build failures: $FAILED_BUILDS"
+  echo -e "\n Projects with build failures:"
+  printf '\t%s\n' "${FAILED_BUILDS[@]}"
   EXCODE=1
 fi
 echo -e "\n----------------------------------\n"
