@@ -173,8 +173,7 @@ lint:
 ifneq (, $(shell which scan-build))
 	$(info Make (Grok - Lint): Linting "${PROJNAME}" source file: ${PROJSRC} (using scan-build)...)
 # Invoke scan-build on your project's source files
-# Note that, as with the build rule, the flag -std=c99 tells GCC to compile for C99 syntax (ISO/IEC 9899:1999)
-	scan-build gcc -std=c99 -c ${PROJSRC}
+        make lint
 else
 	$(info Make (Grok - Lint): Will skip linting "${PROJNAME}", as scan-build does not appear to be available. Please install scan-build, or check your PATH.)
 	$(info Make (Grok - Lint): For detailed documentation, please run 'cat ${CURDIR}/makefile | more' in your terminal.)
