@@ -1,6 +1,6 @@
 # Grok
 
-[![Build Status](https://jenkins.nhq/buildStatus/icon?job=Charlton%27s+Projects%2FGrok%2Fmaster)](https://jenkins.nhq/job/Charlton%27s%20Projects/job/Grok/job/master/)
+[![Build Status](https://jenkins.nhq/buildStatus/icon?job=Charlton%2FGrok%2Fmaster)](https://jenkins.nhq/job/Charlton/job/Grok/job/master/)
 
 Welcome to Grok: a simple, straightforward testing and continuous integration framework for introductory computer programming courses.
 
