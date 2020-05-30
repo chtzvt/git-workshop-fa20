@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 
-int main(){
+int main(int argc, char **argv){
   char name[10];
   int number1, number2;
 
@@ -20,6 +20,9 @@ int main(){
   scanf(" %d", &number2);
 
   printf("\nThe sum of %d and %d is %d. Neat!\n\n", number1, number2, (number1 + number2));
+
+  if(argc > 1)
+    printf("The word of the day is: %s\n", argv[1]);
 
   printf("Bye for now, %s\n", name);
 
