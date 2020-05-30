@@ -1,5 +1,7 @@
 # Grok
 
+[![Build Status](https://jenkins.nhq/buildStatus/icon?job=Charlton%27s+Projects%2FGrok%2Fmaster)](https://jenkins.nhq/job/Charlton%27s%20Projects/job/Grok/job/master/)
+
 Welcome to Grok: a simple, straightforward testing and continuous integration framework for introductory computer programming courses.
 
 Grok makes it easy for students to write, debug, and test code by introducing them to the core concepts of build scripting, automated testing, and continuous integration. Grok is equal parts an educational aid and development tool, as it abstracts or otherwise assists with a number of clerical aspects of academic software development which often frustrate beginners.
