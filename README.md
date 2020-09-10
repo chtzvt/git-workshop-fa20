@@ -11,7 +11,7 @@ To contribute, you should first [fork this repository](https://help.github.com/a
 
 When you've done that, [open a pull request](https://github.com/ctrezevant/git-workshop/compare) so we can merge your changes in!
 
-[![Build Status](https://travis-ci.com/ctrezevant/git-workshop-fa20.svg?branch=master)](https://travis-ci.com/ctrezevant/git-workshop-fa20)
+[![Build Status](https://travis-ci.com/ctrezevant/git-workshop-fa20.svg?token=1gXi4TsAhWA5sHSzQgnA&branch=master)](https://travis-ci.com/ctrezevant/git-workshop-fa20)
 
 ---
 
