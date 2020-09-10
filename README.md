@@ -1,6 +1,21 @@
-# Grok
+# Git Workshop
+Charlton Trezevant - [TechKnights](http://techknights.org/) - Spring 2020
 
-[![Build Status](https://jenkins.nhq/buildStatus/icon?job=Charlton%2FGrok%2Fmaster)](https://jenkins.nhq/job/Charlton/job/Grok/job/master/)
+![Workshop](https://cdn-images-1.medium.com/max/1600/1*n-KARxQmPoktpDNLruTFGw.jpeg)
+
+_Welcome to our Amazing Git Workshop Repo!_ :sparkles:
+
+## Contributing
+
+To contribute, you should first [fork this repository](https://help.github.com/articles/fork-a-repo/), then add a little blurb about yourself ([like so](people/charlton.md)).
+
+When you've done that, [open a pull request](https://github.com/ctrezevant/git-workshop/compare) so we can merge your changes in!
+
+[![Build Status](https://travis-ci.com/ctrezevant/git-workshop-fa20.svg?branch=master)](https://travis-ci.com/ctrezevant/git-workshop-fa20)
+
+---
+
+## Grok
 
 Welcome to Grok: a simple, straightforward testing and continuous integration framework for introductory computer programming courses.
 
@@ -64,6 +79,3 @@ Top Level Directory
 
 
 
-```
-[![Build Status](https://travis-ci.com/<username>/<reponame>.svg?token=<your_token>&branch=master)](https://travis-ci.com/<username>/<reponame>)
-```
